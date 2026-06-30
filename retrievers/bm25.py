@@ -1,6 +1,7 @@
 from rank_bm25 import BM25Okapi
 import chunker
 import pandas as pd
+import pickle
 
 df = pd.read_csv("Constitution of India.csv")
 
@@ -27,6 +28,11 @@ def create_document():
 
 
 document = create_document()
+
+with open("data/documents.pkl", "wb") as f:
+    pickle.dump(document, f)
+
+
 def create_bm25():
     corpus = [
         f''' Title: {doc['metadata']['title']} Article: {doc['metadata']['article']} {doc['text']}'''
@@ -41,13 +47,16 @@ def create_bm25():
 
 bm_25 = create_bm25()
 
+with open("data/bm25_index.pkl", "wb") as f:
+    pickle.dump(bm_25, f)
+
 query = "Preamble"
 
 tokenized_query = query.lower().split()
 
 scores = bm_25.get_scores(tokenized_query)
 
-print(scores)
+print(scores[0 : 5])
     
 
 
