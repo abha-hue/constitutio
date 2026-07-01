@@ -42,7 +42,6 @@ def create_bm25():
     tokenized_corpus = [doc.lower().split(" ") for doc in corpus]
     print(tokenized_corpus[0])
     bm_25 = BM25Okapi(tokenized_corpus)
-    print(bm_25)
     return bm_25
 
 bm_25 = create_bm25()

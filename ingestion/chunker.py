@@ -18,6 +18,7 @@ def create_embeddings():
             {
                 "text": text,
                 "metadata": {
+                    "text" : text,
                     "source": "Constitution of India",
                     "title": row["title"],
                     "article": row["article"],

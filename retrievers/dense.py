@@ -24,6 +24,7 @@ results = index.query(
 )
 
 for match in results.matches:
+    print(f"text: {match.metadata['text']}")
     print(f"Score: {match.score}")
     print(f"Article: {match.metadata['article']}")
     print(f"Title: {match.metadata['title']}")
