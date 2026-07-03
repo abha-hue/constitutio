@@ -9,17 +9,20 @@ def create_document():
     document = []
     for _, row in df.iterrows():
         text = (
-                f"Title: {row['title']} \n "
-                f"Article: {row['article']} \n\n "
-                f"{row['description']}"
-                )
+            f"Title: {row['title']}\n"
+            f"Article: {row['article']}\n\n"
+            f"{str(row['description']).strip()}"
+        )
+
         document.append(
             {
+                "id": f"article_{row['article']}",
                 "text": text,
                 "metadata": {
+                    "text": text,
                     "source": "Constitution of India",
-                    "title": row["title"],
-                    "article": row["article"],
+                    "title": str(row["title"]).strip(),
+                    "article": str(row["article"]).strip(),
                 },
             }
         )

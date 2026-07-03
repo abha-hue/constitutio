@@ -1,39 +1,42 @@
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 
-
 df = pd.read_csv("Constitution of India.csv")
-document = []
+
+documents = []
 
 
 def create_embeddings():
-    for _, row in df.iterrows():
-        text = text = f"""
-            Title: {row['title']}
-            Article: {row['article']}
+    model = SentenceTransformer("all-MiniLM-L6-v2")
 
-            {row['description']}
-            """
-        document.append(
+    texts = []
+
+    for _, row in df.iterrows():
+        text = (
+            f"Title: {row['title']}\n"
+            f"Article: {row['article']}\n\n"
+            f"{str(row['description']).strip()}"
+        )
+
+        documents.append(
             {
+                "id": f"article_{row['article']}",
                 "text": text,
                 "metadata": {
-                    "text" : text,
+                    "text": text,
                     "source": "Constitution of India",
-                    "title": row["title"],
-                    "article": row["article"],
+                    "title": str(row["title"]).strip(),
+                    "article": str(row["article"]).strip(),
                 },
             }
         )
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    texts = [doc["text"] for doc in document]
+        texts.append(text)
 
     embeddings = model.encode(
         texts,
         convert_to_numpy=True,
         show_progress_bar=True,
     )
-    return embeddings
 
-
+    return documents, embeddings

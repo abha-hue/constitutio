@@ -2,30 +2,44 @@ import os
 from dotenv import load_dotenv
 from pinecone import Pinecone
 
-import chunker
+from chunker import create_embeddings
+
 load_dotenv()
 
 
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-index = pc.Index("constituto")
+PINECONE_INDEX = "constituto"
 
-def main():
-    embeddings = chunker.create_embeddings()
 
+def get_index():
+    pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+    return pc.Index(PINECONE_INDEX)
+
+
+def build_vectors(documents, embeddings):
     vectors = []
-    load_dotenv()
-    for i, doc in enumerate(chunker.document):
+
+    for i, document in enumerate(documents):
         vectors.append(
             {
-                "id": f"article_{doc['metadata']['article']}",
+                "id": document["id"],
                 "values": embeddings[i].tolist(),
-                "metadata": {**doc["metadata"]},
+                "metadata": document["metadata"],
             }
         )
 
+    return vectors
+
+
+def main():
+    documents, embeddings = create_embeddings()
+
+    vectors = build_vectors(documents, embeddings)
+
+    index = get_index()
     index.upsert(vectors=vectors)
+
+    print(f"Successfully uploaded {len(vectors)} vectors.")
 
 
 if __name__ == "__main__":
     main()
-
