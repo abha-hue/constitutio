@@ -8,7 +8,7 @@ import numpy as np
 load_dotenv()
 
 # Load embedding model
-# model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 # Load BM25 and documents
 documents = pickle.load(open("data/documents.pkl", "rb"))
 bm25 = pickle.load(open("data/bm25_index.pkl", "rb"))
@@ -21,7 +21,7 @@ def dense_retrieval(query):
     query_embedding = model.encode(query).tolist()
     results = index.query(
         vector=query_embedding,
-        top_k=5,
+        top_k=10,
         include_metadata=True
     )
     dense_results = []
@@ -70,10 +70,45 @@ def normalize_scores(results):
         else:
             result["normalized_score"] = (result["score"] - min_score) / (max_score - min_score)
 
-dense_results = dense_retrieval("preamble")
-bm25_results = bm25_retrieval("preamble")
+dense_results = dense_retrieval("how is the right to equality protected under the constitution of india")
+bm25_results = bm25_retrieval("how is the right to equality protected under the constitution of india")
 
 normalize_scores(dense_results)
 normalize_scores(bm25_results)
+
+def merge_results(dense_results, bm25_results, alpha=0.5):
+    merged_results = {}
+    
+    for result in dense_results:
+        merged_results[result["id"]] = {
+            "text": result["text"],
+            "article": result["article"],
+            "title": result["title"],
+            "score": alpha * result["normalized_score"]
+        }
+    
+    for result in bm25_results:
+        if result["id"] in merged_results:
+            merged_results[result["id"]]["score"] += (1 - alpha) * result["normalized_score"]
+        else:
+            merged_results[result["id"]] = {
+                "text": result["text"],
+                "article": result["article"],
+                "title": result["title"],
+                "score": (1 - alpha) * result["normalized_score"]
+            }
+    
+    return sorted(merged_results.values(), key=lambda x: x["score"], reverse=True)
+
+
+merged_results = merge_results(dense_results, bm25_results, alpha=0.5)
+
+for result in merged_results:
+    print(f"Title: {result['title']}, Article: {result['article']}, Score: {result['score']}")
+    print(f"Text: {result['text']}")
+    print("-" * 50)
+
+
+    
 
     
