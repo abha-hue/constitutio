@@ -121,16 +121,3 @@ def reranker(merged_results, query):
     return sorted(merged_results, key=lambda x: x["rerank_score"], reverse=True)
 
 reranker_results = reranker(merged_results, "how is the right to equality protected under the constitution of india")
-
-
-for result in reranker_results:
-    print(f"Title: {result['title']}")
-    print(f"Article: {result['article']}")
-    print(f"Score: {result['score']}")
-    print(f"Rerank Score: {result['rerank_score']}")
-    print(f"Text: {result['text']}")
-    print("-" * 50)
-
-    
-
-    
