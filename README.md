@@ -17,7 +17,7 @@ The project loads constitutional content from a CSV dataset, creates embeddings,
 - api/ - API entry points for serving the RAG workflow
 - ingestion/ - Data loading and chunking logic
 - retrievers/ - Retrieval strategies such as BM25, dense retrieval, and hybrid retrieval
-- reranker/ - Cross-encoder reranking logic
+- reranker/ - Cross-encoder reranking logicpyht
 - llm/ - LLM generation layer
 - data/ - Local data storage
 - embeddings/ - Embedding artifacts

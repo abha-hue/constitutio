@@ -1,16 +1,14 @@
 from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
-from sentence_transformers import CrossEncoder
 from dotenv import load_dotenv
 import pickle
 import os
 import numpy as np
+from embeddings.model import model
+from reranker.cross_encoder import encoderModel
 
 load_dotenv()
 
-# Load embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
-encoderModel = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
 # Load BM25 and documents
 documents = pickle.load(open("data/documents.pkl", "rb"))
 bm25 = pickle.load(open("data/bm25_index.pkl", "rb"))
@@ -72,11 +70,6 @@ def normalize_scores(results):
         else:
             result["normalized_score"] = (result["score"] - min_score) / (max_score - min_score)
 
-dense_results = dense_retrieval("how is the right to equality protected under the constitution of india")
-bm25_results = bm25_retrieval("how is the right to equality protected under the constitution of india")
-
-normalize_scores(dense_results)
-normalize_scores(bm25_results)
 
 def merge_results(dense_results, bm25_results, alpha=0.5):
     merged_results = {}
@@ -103,7 +96,6 @@ def merge_results(dense_results, bm25_results, alpha=0.5):
     return sorted(merged_results.values(), key=lambda x: x["score"], reverse=True)
 
 
-merged_results = merge_results(dense_results, bm25_results, alpha=0.5)
 
 def reranker(merged_results, query):
     rerank_doc = []
@@ -120,4 +112,3 @@ def reranker(merged_results, query):
     
     return sorted(merged_results, key=lambda x: x["rerank_score"], reverse=True)
 
-reranker_results = reranker(merged_results, "how is the right to equality protected under the constitution of india")
