@@ -112,3 +112,16 @@ def reranker(merged_results, query):
     
     return sorted(merged_results, key=lambda x: x["rerank_score"], reverse=True)
 
+
+async def hybrid_retrieval(query):
+    dense_results = dense_retrieval(query)
+    bm25_results = bm25_retrieval(query)
+
+    normalize_scores(dense_results)
+    normalize_scores(bm25_results)
+
+    merged_results = merge_results(dense_results, bm25_results, alpha=0.5)
+    merged_results = merged_results[:10]
+    reranked_results = reranker(merged_results, query)
+
+    return reranked_results
