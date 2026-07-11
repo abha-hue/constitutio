@@ -113,7 +113,7 @@ def reranker(merged_results, query):
     return sorted(merged_results, key=lambda x: x["rerank_score"], reverse=True)
 
 
-async def hybrid_retrieval(query):
+def hybrid_retrieval(query):
     dense_results = dense_retrieval(query)
     bm25_results = bm25_retrieval(query)
 
