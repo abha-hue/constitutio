@@ -1,42 +1,89 @@
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-from retrievers.hybrid import dense_retrieval, bm25_retrieval, normalize_scores, merge_results, reranker
 
+from retrievers.hybrid import hybrid_retrieval
+
+# Initialize LLM once
 llm = ChatGroq(
     model_name="llama-3.3-70b-versatile",
     temperature=0,
-    
 )
 
+# Prompt Template
+chat_prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
+You are an AI legal assistant specializing in the Constitution of India.
+
+Answer the user's question ONLY using the provided context.
+
+If the answer cannot be found in the context, say:
+"I could not find the answer in the retrieved documents."
+
+Be concise and cite the relevant Article numbers whenever possible.
+
+Context:
+{context}
+"""
+        ),
+        (
+            "human",
+            "{query}"
+        ),
+    ]
+)
+
+# Build chain once
+chain = chat_prompt | llm | StrOutputParser()
+
+
+def build_context(retrieved_docs):
+    """
+    Converts retrieved documents into a readable context string.
+    """
+
+    context = ""
+
+    for doc in retrieved_docs[:5]:
+        context += f"""
+Title: {doc['title']}
+Article: {doc['article']}
+
+{doc['text']}
+
+----------------------------------------
+"""
+
+    return context
+
+
 def generate_response(query):
-    # Step 1: Retrieve relevant documents using hybrid retrieval
-    dense_results = dense_retrieval(query)
-    bm25_results = bm25_retrieval(query)
+    retrieved_docs = hybrid_retrieval(query)
 
-    # Step 2: Normalize scores for both retrieval methods
-    normalize_scores(dense_results)
-    normalize_scores(bm25_results)
+    context = build_context(retrieved_docs)
 
-    # Step 3: Merge results from both retrieval methods
-    merged_results = merge_results(dense_results, bm25_results, alpha=0.5)
-
-    # Step 4: Rerank the merged results based on relevance to the query
-    reranked_results = reranker(merged_results, query)
-
-    # Step 5: Prepare the context for the LLM
-    context = "\n\n".join([f"Title: {result['title']}\nArticle: {result['article']}\nText: {result['text']}" for result in reranked_results[:10]])
-
-    # Step 6: Create a prompt for the LLM
-    prompt_template = ChatPromptTemplate.from_template(
-        "You are an AI assistant. Use the following context to answer the question.\n\nContext:\n{context}\n\nQuestion:\n{query}\n\nAnswer:"
+    # Generate response
+    response = chain.invoke(
+        {
+            "query": query,
+            "context": context
+        }
     )
-    
-    prompt = prompt_template.format(context=context, query=query)
 
-    # Step 7: Generate a response using the LLM
-    response = llm.generate(prompt)
-    
     return response
 
-print(generate_response("What is the significance of Article 370 in the Indian Constitution?"))
+
+if __name__ == "__main__":
+
+    query = "What is the significance of Article 370 in the Indian Constitution?"
+
+    answer = generate_response(query)
+
+    print("\nQuestion:")
+    print(query)
+
+    print("\nAnswer:")
+    print(answer)
