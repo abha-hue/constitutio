@@ -7,4 +7,15 @@ __pycache__/
 *.log
 .pytest_cache/
 .mypy_cache/
-embeddings.csv
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+# frontend/out/
+
+# Data artifacts
+data/*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
