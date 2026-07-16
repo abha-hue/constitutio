@@ -57,12 +57,12 @@ export default function ChatPromptBox({
       <div
         className={cn(
           "relative flex items-end gap-2",
-          "rounded-[28px] border border-white/[0.08]",
-          "bg-white/[0.05] backdrop-blur-xl",
-          "shadow-[0_0_20px_rgba(0,0,0,0.25)]",
+          "rounded-[28px] border border-outline-variant/30",
+          "glass",
+          "shadow-lg",
           "px-4 py-3",
           "transition-colors duration-200",
-          "focus-within:border-white/[0.15]",
+          "focus-within:border-primary/30",
         )}
       >
         {/* Textarea */}
@@ -76,10 +76,10 @@ export default function ChatPromptBox({
           rows={1}
           className={cn(
             "flex-1 resize-none bg-transparent",
-            "text-sm text-white/90 placeholder:text-white/30",
+            "font-body-md text-body-md text-primary placeholder:text-on-surface-variant/50",
             "outline-none",
             "max-h-[220px] overflow-y-auto",
-            "scrollbar-thin scrollbar-thumb-white/10",
+            "scrollbar-thin scrollbar-thumb-outline-variant/30",
             "leading-6 py-0.5",
             "disabled:opacity-40 disabled:cursor-not-allowed",
           )}
@@ -97,8 +97,8 @@ export default function ChatPromptBox({
             "h-8 w-8 rounded-full",
             "transition-all duration-200",
             canSend
-              ? "bg-white text-black hover:bg-white/90 cursor-pointer"
-              : "bg-white/10 text-white/20 cursor-not-allowed",
+              ? "bg-primary text-background hover:bg-primary/90 cursor-pointer"
+              : "bg-surface-variant/50 text-on-surface-variant/50 cursor-not-allowed",
           )}
           aria-label="Send message"
         >

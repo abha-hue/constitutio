@@ -11,7 +11,7 @@ export default function TypingIndicator() {
       transition={{ duration: 0.25 }}
       className="flex justify-start"
     >
-      <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-white/[0.05] border border-white/[0.06] px-4 py-3">
+      <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md glass px-5 py-4">
         <span className="typing-dot" />
         <span className="typing-dot [animation-delay:0.15s]" />
         <span className="typing-dot [animation-delay:0.3s]" />

@@ -19,7 +19,7 @@ export default function ChatMessages({ messages, isLoading }: Props) {
   }, [messages, isLoading])
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-thumb-white/10">
+    <div className="flex-1 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-thumb-outline-variant/30">
       <div className="mx-auto flex max-w-[850px] flex-col gap-4">
         {messages.map((msg) => (
           <MessageBubble key={msg.id} message={msg} />

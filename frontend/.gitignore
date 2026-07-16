@@ -42,3 +42,9 @@ next-env.d.ts
 
 AGENTS.md
 CLAUDE.md
+
+# temp files from conversion
+*.py
+tmp_landing.html
+custom_styles.css
+

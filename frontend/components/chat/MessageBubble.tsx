@@ -16,10 +16,10 @@ export default function MessageBubble({ message }: { message: Message }) {
     >
       <div
         className={cn(
-          "max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+          "max-w-[75%] rounded-2xl px-5 py-4 font-body-md text-body-md leading-relaxed",
           isUser
-            ? "bg-white/[0.12] text-white/90 rounded-br-md"
-            : "bg-white/[0.05] border border-white/[0.06] text-white/80 rounded-bl-md",
+            ? "bg-surface-variant text-primary rounded-br-md"
+            : "glass text-on-surface-variant rounded-bl-md",
         )}
       >
         <p className="whitespace-pre-wrap break-words">{message.content}</p>

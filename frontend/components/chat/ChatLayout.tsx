@@ -16,11 +16,11 @@ export default function ChatLayout({ messages, isLoading, onSend }: Props) {
   const hasMessages = messages.length > 0
 
   return (
-    <div className="flex h-dvh flex-col bg-[#0a0a0b]">
+    <div className="flex h-dvh flex-col bg-background custom-scrollbar">
       {/* Header — always visible */}
-      <header className="flex items-center justify-center gap-2.5 border-b border-white/[0.06] px-6 py-4">
-        <Scale className="h-5 w-5 text-white/50" />
-        <h1 className="text-base font-semibold tracking-tight text-white/80">
+      <header className="flex items-center justify-center gap-2.5 border-b border-outline-variant/30 px-6 py-4">
+        <Scale className="h-5 w-5 text-primary/50" />
+        <h1 className="font-headline-sm text-[20px] font-semibold tracking-tight text-primary">
           Constitutio
         </h1>
       </header>
@@ -34,7 +34,7 @@ export default function ChatLayout({ messages, isLoading, onSend }: Props) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex-shrink-0 border-t border-white/[0.04] bg-[#0a0a0b]/80 backdrop-blur-md"
+            className="flex-shrink-0 border-t border-outline-variant/30 bg-background/80 backdrop-blur-md"
           >
             <ChatPromptBox onSend={onSend} isLoading={isLoading} />
           </motion.div>
@@ -48,10 +48,10 @@ export default function ChatLayout({ messages, isLoading, onSend }: Props) {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="mb-6 text-center"
           >
-            <h2 className="text-2xl font-semibold text-white/70">
+            <h2 className="font-headline-md text-headline-md text-primary">
               What do you want to know?
             </h2>
-            <p className="mt-2 text-sm text-white/30">
+            <p className="mt-2 font-body-md text-body-md text-on-surface-variant">
               Ask anything about the Constitution of India
             </p>
           </motion.div>
