@@ -14,72 +14,66 @@ The project loads constitutional content from a CSV dataset, creates embeddings,
 
 ## Project structure
 
-- api/ - API entry points for serving the RAG workflow
-- ingestion/ - Data loading and chunking logic
-- retrievers/ - Retrieval strategies such as BM25, dense retrieval, and hybrid retrieval
-- reranker/ - Cross-encoder reranking logicpyht
-- llm/ - LLM generation layer
-- data/ - Local data storage
-- embeddings/ - Embedding artifacts
-- eval.py - Evaluation entry point
-- Constitution of India.csv - Source dataset
+- `frontend/` - Next.js web application providing the beautiful landing page and chat interface
+- `api/` - API entry points for serving the RAG workflow
+- `ingestion/` - Data loading and chunking logic
+- `retrievers/` - Retrieval strategies such as BM25, dense retrieval, and hybrid retrieval
+- `reranker/` - Cross-encoder reranking logic
+- `llm/` - LLM generation layer
+- `data/` - Local data storage
+- `embeddings/` - Embedding artifacts
+- `eval.py` - Evaluation entry point
+- `Constitution of India.csv` - Source dataset
 
 ## Current workflow
 
-The current implementation focuses on ingestion and embedding generation:
+The project consists of an end-to-end RAG backend and a modern web interface:
 
-1. Read constitutional records from the CSV file
-2. Extract the text and metadata fields
-3. Generate sentence embeddings with a local transformer model
-4. Save the embeddings to embeddings.csv
+1. **Backend**: Reads constitutional records from the CSV file, chunks them, generates sentence embeddings, and handles user queries using a custom retrieval/reranking process.
+2. **Frontend**: A sleek Next.js application that provides a landing page and chat interface for interacting with the backend.
 
 ## Setup
 
-### Prerequisites
+### 1. Backend (Python)
 
+**Prerequisites:**
 - Python 3.9+
-- pip
 
-### Install dependencies
-
-```bash
-pip install pandas sentence-transformers
-```
-
-### Create a virtual environment (recommended)
-
+**Installation:**
 ```bash
 python -m venv .venv
+# Mac/Linux:
 source .venv/bin/activate
-```
-
-On Windows PowerShell:
-
-```powershell
-python -m venv .venv
+# Windows PowerShell:
 .\.venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt # (or pip install pandas sentence-transformers fastapi uvicorn etc.)
 ```
 
-## Run the ingestion pipeline
-
+**Run the ingestion pipeline:**
 ```bash
 python ingestion/chunker.py
 ```
-
 This script reads the Constitution dataset and creates embeddings for the text entries.
+
+### 2. Frontend (Next.js)
+
+**Prerequisites:**
+- Node.js (v18+)
+
+**Installation:**
+```bash
+cd frontend
+npm install
+```
+
+**Run the development server:**
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ## Notes
 
-- This repository is still under active development.
-- The retrieval, reranking, and generation components are scaffolded and can be expanded into a complete end-to-end RAG system.
-- The project is intentionally implemented from scratch rather than using LangChain.
-
-## Future scope
-
-Possible next steps for the project:
-
-- Build a working retrieval API
-- Add BM25 and dense retrieval comparison
-- Implement reranking for better context selection
-- Connect the retrieved chunks to an LLM for grounded answers
-- Add evaluation metrics for retrieval quality
+- The retrieval, reranking, and generation components are intentionally implemented from scratch rather than using high-level frameworks like LangChain.
+- The UI features a custom design system with dynamic animations, glassmorphism, and responsive layouts.
