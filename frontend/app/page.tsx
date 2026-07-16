@@ -81,7 +81,7 @@ export default function LandingPage() {
         <div className="relative group">
             <div className="absolute -inset-2 bg-gradient-to-r from-primary/10 to-transparent blur-2xl opacity-50 group-hover:opacity-70 transition duration-1000"></div>
             <div className="relative rounded-xl overflow-hidden glass border border-white/10 aspect-[4/5] md:aspect-square flex items-center justify-center p-gutter">
-                <img className="w-full h-full object-cover rounded-lg opacity-80" alt="Preamble interface" src="/landing-image.jpg" />
+                <img className="w-full h-full object-cover rounded-lg opacity-80" alt="Preamble interface" src="/constitutio_hero.png" />
             </div>
         </div>
     </div>

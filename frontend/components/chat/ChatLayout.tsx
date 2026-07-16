@@ -5,6 +5,7 @@ import type { Message } from "@/types/chat"
 import ChatMessages from "./ChatMessages"
 import ChatPromptBox from "@/components/ui/chat-prompt-box"
 import { Scale } from "lucide-react"
+import AnimatedScale from "@/components/ui/animated-scale"
 
 interface Props {
   messages: Message[]
@@ -48,6 +49,9 @@ export default function ChatLayout({ messages, isLoading, onSend }: Props) {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="mb-6 text-center"
           >
+            <div className="flex justify-center mb-6">
+              <AnimatedScale className="w-24 h-24" />
+            </div>
             <h2 className="font-headline-md text-headline-md text-primary">
               What do you want to know?
             </h2>
