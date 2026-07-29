@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import pickle
 import os
 import numpy as np
-from embeddings.model import model
-from reranker.cross_encoder import encoderModel
+import cohere
 
 load_dotenv()
 
@@ -12,13 +11,20 @@ load_dotenv()
 # Load BM25 and documents
 documents = pickle.load(open("data/documents.pkl", "rb"))
 bm25 = pickle.load(open("data/bm25_index.pkl", "rb"))
-
+co = cohere.ClientV2()
 # Connect to Pinecone
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pc.Index("constituto")
 
 def dense_retrieval(query):
-    query_embedding = model.encode(query).tolist()
+    response = co.embed(
+        model="embed-v4.0",
+        texts=[query],
+        input_type="search_query",
+        embedding_types=["float"],
+        output_dimension=512
+    )
+    query_embedding = response.embeddings.float[0]
     results = index.query(
         vector=query_embedding,
         top_k=10,
@@ -36,6 +42,7 @@ def dense_retrieval(query):
         })
     return dense_results
 
+dense_results = dense_retrieval("Preamble")
 
 def bm25_retrieval(query, top_k=5):
     tokenized_query = query.lower().split()
@@ -98,19 +105,23 @@ def merge_results(dense_results, bm25_results, alpha=0.5):
 
 
 def reranker(merged_results, query):
-    rerank_doc = []
-    pairs = []
-    for result in merged_results:
-        rerank_doc.append((result["text"], result["article"], result["title"]))
-    
-    for doc in rerank_doc:
-        pairs.append((query, doc[0]))
-    
-    model_scores = encoderModel.predict(pairs)
-    for i, result in enumerate(merged_results):
-        result["rerank_score"] = model_scores[i]
-    
-    return sorted(merged_results, key=lambda x: x["rerank_score"], reverse=True)
+    documents = [result["text"] for result in merged_results]
+
+    response = co.rerank(
+        model="rerank-v3.5",
+        query=query,
+        documents=documents,
+        top_n=10
+    )
+
+    reranked = []
+    for item in response.results:
+        result = merged_results[item.index].copy()
+        result["rerank_score"] = item.relevance_score
+        reranked.append(result)
+
+    return sorted(reranked, key=lambda x: x["rerank_score"], reverse=True)
+
 
 
 def hybrid_retrieval(query):

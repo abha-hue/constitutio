@@ -6,7 +6,6 @@ from chunker import create_embeddings
 
 load_dotenv()
 
-
 PINECONE_INDEX = "constituto"
 
 
@@ -18,11 +17,11 @@ def get_index():
 def build_vectors(documents, embeddings):
     vectors = []
 
-    for i, document in enumerate(documents):
+    for document, embedding in zip(documents, embeddings):
         vectors.append(
             {
                 "id": document["id"],
-                "values": embeddings[i].tolist(),
+                "values": embedding,
                 "metadata": document["metadata"],
             }
         )
@@ -33,9 +32,15 @@ def build_vectors(documents, embeddings):
 def main():
     documents, embeddings = create_embeddings()
 
+    assert len(documents) == len(embeddings), (
+        f"Mismatch: {len(documents)} documents but "
+        f"{len(embeddings)} embeddings."
+    )
+
     vectors = build_vectors(documents, embeddings)
 
     index = get_index()
+
     index.upsert(vectors=vectors)
 
     print(f"Successfully uploaded {len(vectors)} vectors.")
