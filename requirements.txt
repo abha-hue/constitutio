@@ -8,4 +8,4 @@ python-dotenv>=1.0.0
 numpy>=1.24.0
 rank-bm25>=0.2.0
 pandas>=2.0.0
-sentence-transformers>=2.2.0
+cohere>=5.0.0

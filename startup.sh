@@ -9,7 +9,7 @@ os.makedirs("data", exist_ok=True)
 from retrievers.bm25 import create_document, create_bm25
 doc = create_document()
 pickle.dump(doc, open("data/documents.pkl", "wb"))
-bm25 = create_bm25()
+bm25 = create_bm25(docs=doc)
 pickle.dump(bm25, open("data/bm25_index.pkl", "wb"))
 print("Done")
 PYEOF

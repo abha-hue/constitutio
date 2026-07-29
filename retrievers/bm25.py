@@ -1,5 +1,4 @@
 from rank_bm25 import BM25Okapi
-import chunker
 import pandas as pd
 import pickle
 
@@ -30,35 +29,34 @@ def create_document():
     return document
 
 
-document = create_document()
-
-with open("data/documents.pkl", "wb") as f:
-    pickle.dump(document, f)
-
-
-def create_bm25():
+def create_bm25(docs=None):
+    if docs is None:
+        docs = create_document()
     corpus = [
-        f''' Title: {doc['metadata']['title']} Article: {doc['metadata']['article']} {doc['text']}'''
-        for doc in document
+        f''' Title: {d['metadata']['title']} Article: {d['metadata']['article']} {d['text']}'''
+        for d in docs
     ]
-    
-    tokenized_corpus = [doc.lower().split(" ") for doc in corpus]
+    tokenized_corpus = [d.lower().split(" ") for d in corpus]
     print(tokenized_corpus[0])
     bm_25 = BM25Okapi(tokenized_corpus)
     return bm_25
 
-bm_25 = create_bm25()
 
-with open("data/bm25_index.pkl", "wb") as f:
-    pickle.dump(bm_25, f)
+if __name__ == "__main__":
+    document = create_document()
 
-query = "Preamble"
+    with open("data/documents.pkl", "wb") as f:
+        pickle.dump(document, f)
 
-tokenized_query = query.lower().split()
+    bm_25 = create_bm25(docs=document)
 
-scores = bm_25.get_scores(tokenized_query)
+    with open("data/bm25_index.pkl", "wb") as f:
+        pickle.dump(bm_25, f)
 
-print(scores[0 : 5])
+    query = "Preamble"
+    tokenized_query = query.lower().split()
+    scores = bm_25.get_scores(tokenized_query)
+    print(scores[0 : 5])
     
 
 

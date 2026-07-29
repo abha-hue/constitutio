@@ -42,7 +42,6 @@ def dense_retrieval(query):
         })
     return dense_results
 
-dense_results = dense_retrieval("Preamble")
 
 def bm25_retrieval(query, top_k=5):
     tokenized_query = query.lower().split()
