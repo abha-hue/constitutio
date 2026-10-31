@@ -6,7 +6,7 @@ from retrievers.hybrid import hybrid_retrieval
 
 # Initialize LLM once
 llm = ChatGroq(
-    model_name="qwen/qwen3.6-27b",
+    model_name="qwen/qwen3.8-27b",
     temperature=0,
 )
 
@@ -22,7 +22,7 @@ Answer the user's question ONLY using the provided context.
 
 If the answer cannot be found in the context, say:
 "I could not find the answer in the retrieved documents."
-
+hide whatever you think the final answer must only contain the answer to the question, and nothing else.
 Be concise and cite the relevant Article numbers whenever possible.
 
 Context:
